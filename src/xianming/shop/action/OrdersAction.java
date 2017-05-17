@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
@@ -17,6 +19,7 @@ import xianming.shop.exception.ShopException;
 import xianming.shop.model.Address;
 import xianming.shop.model.CartProduct;
 import xianming.shop.model.Orders;
+import xianming.shop.model.Pager;
 import xianming.shop.model.Product;
 import xianming.shop.model.ShopCart;
 import xianming.shop.model.User;
@@ -66,10 +69,11 @@ public class OrdersAction {
 	}
 	
 	@RequestMapping(value="/add",method=RequestMethod.GET)
-	public String add(@ModelAttribute Orders orders,Model model,HttpSession session){
+	public String add(@ModelAttribute Orders orders,Model model,HttpSession session,HttpServletResponse response,HttpServletRequest request){
 		double totalPrice = 0;
 		User loginUser = (User)session.getAttribute("loginUser");
 		if(loginUser==null){
+			response.setHeader("refresh", "3;url="+request.getContextPath()+"/user/login");
 			throw new ShopException("请先登录");
 		}
 		ShopCart shopCart = (ShopCart)session.getAttribute("ShopCart"); 
@@ -110,8 +114,8 @@ public class OrdersAction {
 		if(loginUser==null){
 			throw new ShopException("请先登录");
 		}
-		List<Orders> orderes = ordersService.listByUserId(loginUser.getId());
-		model.addAttribute("orederes",orderes);
+		Pager<Orders> pages = ordersService.find(loginUser.getId());
+		model.addAttribute("pages",pages);
 		return "orders/list";
 	}
 	

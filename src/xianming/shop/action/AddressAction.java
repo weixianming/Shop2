@@ -1,16 +1,18 @@
 package xianming.shop.action;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import xianming.shop.exception.ShopException;
 import xianming.shop.model.Address;
 import xianming.shop.model.User;
 import xianming.shop.service.IAddressService;
@@ -31,10 +33,11 @@ public class AddressAction {
 	}
 	
 	@RequestMapping(value="/add",method=RequestMethod.GET)
-	public String add(@ModelAttribute Address address,HttpSession session){
+	public String add(@ModelAttribute Address address,HttpSession session,HttpServletResponse response,HttpServletRequest request){
 		User loginUser = (User)session.getAttribute("loginUser");
 		if(loginUser==null){
-			return "redirect:/user/login";
+			response.setHeader("refresh", "3;url="+request.getContextPath()+"/user/login");
+			throw new ShopException("请先登录");
 		}
 		return "address/add";
 	}
@@ -53,9 +56,4 @@ public class AddressAction {
 		return "redirect:/user/list";
 	}
 	
-	@RequestMapping(value="/{a_id}/delete",method=RequestMethod.GET)
-	public String delete(@PathVariable int a_id,HttpSession session){
-		addressService.delete(a_id);
-		return "redirect:/user/show";
-	}
 }

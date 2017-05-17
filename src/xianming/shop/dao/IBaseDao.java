@@ -2,6 +2,8 @@ package xianming.shop.dao;
 
 import java.util.List;
 
+import xianming.shop.model.Pager;
+
 public interface IBaseDao<T> {
 	public void add(T t);
 	public void delete(int id);
@@ -29,4 +31,8 @@ public interface IBaseDao<T> {
 	public void executeByHql(String hql,Object[] args);
 	public void executeByHql(String hql,Object arg);
 	public void executeByHql(String hql);
+	
+	public Pager<T> find(String hql,Object[] args);
+	public Pager<T> find(String hql,Object obj);
+	public Pager<T> find(String hql);
 }

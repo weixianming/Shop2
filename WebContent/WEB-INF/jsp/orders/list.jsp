@@ -18,7 +18,7 @@
 				<tr><th>购买时间</th><th>收件人</th><th>地址</th><th>联系电话</th><th>操作</th></tr>
 			</thead>
 			<tbody>
-				<c:forEach items="${orederes}" var="order">
+				<c:forEach items="${pages.datas}" var="order">
 					<tr>
 						<td><fmt:formatDate value="${order.buyDate}" pattern="yyyy年MM月dd日 HH:mm:ss"/></td>
 						<td>${order.user.nickname }</td>
@@ -27,6 +27,14 @@
 						<td><a href="${order.id}/show">订单详细</a></td>
 					</tr>
 				</c:forEach>
+				<tr>
+					<td colspan="6">
+						<jsp:include page="/inc/pager.jsp">
+							<jsp:param value="list" name="url" />
+							<jsp:param value="${pages.totalRecord}" name="items" />
+						</jsp:include>
+					</td>
+				</tr>
 			</tbody>
 		</table>
 	</div>

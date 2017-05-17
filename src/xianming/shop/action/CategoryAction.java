@@ -38,6 +38,7 @@ public class CategoryAction {
 		if(br.hasErrors()){
 			return "category/add";
 		}
+		System.out.println(category.getName());
 		categoryService.add(category);
 		return "redirect:/category/list";
 	}

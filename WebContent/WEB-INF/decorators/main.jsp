@@ -37,11 +37,15 @@
 	          <a href="<%=request.getContextPath()%>/product/list" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">商品<span class="caret"></span></a>
 	          <ul class="dropdown-menu">
 	            <li><a href="<%=request.getContextPath()%>/product/list">商品列表</a></li>
-	            <li><a href="<%=request.getContextPath()%>/product/add">商品添加</a></li>
-	            <li><a href="#">商品管理</a></li>
+	            <c:if test="${loginUser.type eq 1 }">
+	          	 	 <li><a href="<%=request.getContextPath()%>/product/add">商品添加</a></li>
+	           		 <li><a href="#">商品管理</a></li>
+	            </c:if>
 	            <li role="separator" class="divider"></li>
 	            <li><a href="<%=request.getContextPath()%>/category/list">商品类型</a></li>
-				<li><a href="<%=request.getContextPath()%>/category/add">类型添加</a></li>
+	            <c:if test="${loginUser.type eq 1 }">
+					<li><a href="<%=request.getContextPath()%>/category/add">类型添加</a></li>
+				</c:if>
 	          </ul>
 	        </li>
 			<li class="dropdown">
@@ -49,6 +53,9 @@
 	          <ul class="dropdown-menu">
 		        <c:if test="${loginUser.type eq 1 }">
 		            <li><a href="<%=request.getContextPath()%>/user/list">用户列表</a></li>
+		        </c:if>
+		        <c:if test="${!empty loginUser}">
+		       		<li><a href="<%=request.getContextPath()%>/orders/list">我的订单</a></li>
 		        </c:if>
 	            <li><a href="<%=request.getContextPath()%>/user/show">个人信息</a></li>
 	            <li><a href="<%=request.getContextPath()%>/address/add">添加地址</a></li>

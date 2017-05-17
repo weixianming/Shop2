@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import xianming.shop.model.Category;
+import xianming.shop.model.Pager;
 import xianming.shop.model.Product;
 import xianming.shop.service.ICategoryService;
 import xianming.shop.service.IProductService;
@@ -70,8 +71,8 @@ public class ProductAction {
 	
 	@RequestMapping(value="/list",method=RequestMethod.GET)
 	public String list(Model model){
-		List<Product> list = productService.list();
-		model.addAttribute("products", list);
+		Pager<Product> pages = productService.find();
+		model.addAttribute("pages", pages);
 		List<Category> categorys = categoryService.list();
 		model.addAttribute("categorys", categorys);
 		return "product/list";
@@ -79,7 +80,7 @@ public class ProductAction {
 	
 	@RequestMapping(value="/{c_id}/list",method=RequestMethod.GET)
 	public String list(@PathVariable int c_id,Model model){
-		model.addAttribute("products",productService.listByCid(c_id));
+		model.addAttribute("pages",productService.findByCid(c_id));
 		model.addAttribute("categorys", categoryService.list());
 		return "product/list";
 	}

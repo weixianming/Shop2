@@ -4,19 +4,17 @@ import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Repository;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.opensymphony.module.sitemesh.parser.TokenizedHTMLPage;
 
 import xianming.shop.exception.ShopException;
 import xianming.shop.model.Address;
@@ -49,7 +47,12 @@ public class UserAction {
 	}
 	
 	@RequestMapping(value="/add",method=RequestMethod.GET)
-	public String add(@ModelAttribute User user){
+	public String add(@ModelAttribute User user,HttpSession session,HttpServletResponse response,HttpServletRequest request){
+		User loginUser = (User)session.getAttribute("loginUser");
+		if(loginUser!=null){
+			response.setHeader("refresh", "3;url="+request.getContextPath()+"/product/list");
+			throw new ShopException("无法访问");
+		}
 		return "user/add";
 	}
 
@@ -63,7 +66,13 @@ public class UserAction {
 	}
 	
 	@RequestMapping(value="/list",method=RequestMethod.GET)
-	public String list(Model model){
+	public String list(Model model,HttpSession session){
+		User loginUser = (User)session.getAttribute("loginUser");
+		if(loginUser==null){
+			return "redirect:/user/login";
+		}else if(loginUser.getType()!=1){
+			return "redirect:/product/list";
+		}
 		model.addAttribute("users", userService.list());
 		return "user/list";
 	}
@@ -74,10 +83,18 @@ public class UserAction {
 	}
 	
 	@RequestMapping(value="/login",method=RequestMethod.POST)
-	public String login(String username,String password,HttpSession session){
+	public String login(String username,String password,HttpSession session,HttpServletResponse response,HttpServletRequest request){
 		User u = userService.login(username, password);
+		if(u==null){
+			response.setHeader("refresh", "3;url="+request.getContextPath()+"/user/login");
+			throw new ShopException("用户名或密码不正确");
+		}
+		if(!u.getPassword().equals(password)){
+			response.setHeader("refresh", "3;url="+request.getContextPath()+"/user/login");
+			throw new ShopException("用户名或密码不正确");
+		}
 		session.setAttribute("loginUser", u);
-		return "redirect:/user/list";
+		return "redirect:/product/list";
 	}
 	
 	@RequestMapping(value="/loginOut",method=RequestMethod.GET)
@@ -87,9 +104,10 @@ public class UserAction {
 	}
 	
 	@RequestMapping(value="/show",method=RequestMethod.GET)
-	public String show(Model model,HttpSession session){
+	public String show(Model model,HttpSession session,HttpServletResponse response,HttpServletRequest request){
 		User loginUser = (User)session.getAttribute("loginUser");
 		if(loginUser==null){
+			response.setHeader("refresh", "3;url="+request.getContextPath()+"/user/login");
 			throw new ShopException("请先登录");
 		}else{
 			model.addAttribute("user", loginUser);

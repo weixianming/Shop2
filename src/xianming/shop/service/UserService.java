@@ -7,7 +7,6 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import xianming.shop.dao.IUserDao;
-import xianming.shop.exception.ShopException;
 import xianming.shop.model.User;
 
 @Service("userService")
@@ -52,12 +51,7 @@ public class UserService implements IUserService {
 	@Override
 	public User login(String username, String password) {
 		User u = this.loadByUsername(username);
-		if(u==null){
-			throw new ShopException("用户名或密码不正确");
-		}
-		if(!u.getPassword().equals(password)){
-			throw new ShopException("用户名或密码不正确");
-		}
+		
 		return u;
 	}
 

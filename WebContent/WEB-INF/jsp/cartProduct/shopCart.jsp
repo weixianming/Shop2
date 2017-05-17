@@ -10,7 +10,7 @@
 <title>购物车</title>
 </head>
 <body>
-<div class="container-fluid">
+<div class="container-fluid" style="height: 480px;">
 	<div class="col-xs-12 col-md-8 col-md-offset-2 ">
 		<table class="table table-hover table-bordered ">
 		<tr><td>商品名称</td><td>数量</td><td>价格</td><td colspan="2">操作</td></tr>

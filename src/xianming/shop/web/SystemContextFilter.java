@@ -9,12 +9,13 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-
 import xianming.shop.model.SystemContext;
 import xianming.shop.model.User;
 
 public class SystemContextFilter implements Filter {
 
+	private int pageSize;
+	
 	@Override
 	public void destroy() {
 
@@ -24,18 +25,30 @@ public class SystemContextFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		try {
-			HttpServletRequest hrequest = (HttpServletRequest)request;
-			User u = (User)hrequest.getSession().getAttribute("loginUser");
-			if(u!=null) SystemContext.setLoginUser(u);
+			int tps = pageSize;
+			try {
+				tps = Integer.parseInt(request.getParameter("pageSize"));
+			} catch (NumberFormatException e) {}
+			int pageOffset = 0;
+			try {
+				pageOffset = Integer.parseInt(request.getParameter("pager.offset"));
+			} catch (NumberFormatException e) {}
+			HttpServletRequest hrequest = (HttpServletRequest) request;
+			SystemContext.setPageOffset(pageOffset);
+			SystemContext.setPageSize(tps);
+			User loginUser = (User)hrequest.getSession().getAttribute("loginUser"); 
+			if(loginUser!=null) SystemContext.setLoginUser(loginUser);
 			chain.doFilter(request, response);
 		} finally {
+			SystemContext.removePageSize();
+			SystemContext.removePageOffset();
 			SystemContext.removeLoginUser();
 		}
 	}
 
 	@Override
-	public void init(FilterConfig arg0) throws ServletException {
-
+	public void init(FilterConfig cfg) throws ServletException {
+		pageSize = Integer.parseInt(cfg.getInitParameter("pageSize"));
 	}
 
 }

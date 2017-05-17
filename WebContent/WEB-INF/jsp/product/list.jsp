@@ -28,7 +28,7 @@
 	</div>
 	<div class="col-xs-8 col-md-8 col-md-offset-1">
 		<div class="row" style="height: 550px;">
-			<c:forEach items="${products}" var="product">
+			<c:forEach items="${pages.datas}" var="product">
 				<div class="col-xs-6 col-md-3">
 				<a class="thumbuail" href="<%=request.getContextPath()%>/product/${product.id}/show">
 				<img width="170px" height="150px" alt="图像无法显示" src="<%=request.getContextPath() %>/resources/image/${product.img}">
@@ -38,6 +38,10 @@
 				</div>
 			</c:forEach>
 		</div>
+		<jsp:include page="/inc/pager.jsp">
+			<jsp:param value="list" name="url" />
+			<jsp:param value="${pages.totalRecord}" name="items" />
+		</jsp:include>
 	</div>
 	</div>
 </div>

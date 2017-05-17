@@ -2,6 +2,7 @@ package xianming.shop.service;
 
 import java.util.List;
 
+import xianming.shop.model.Pager;
 import xianming.shop.model.Product;
 
 public interface IProductService {
@@ -11,4 +12,6 @@ public interface IProductService {
 	public Product load(int id);
 	public List<Product> listByCid(int c_id);
 	public List<Product> list();
+	public Pager<Product> find();
+	public Pager<Product> findByCid(int c_id);
 }

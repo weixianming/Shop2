@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import xianming.shop.dao.ICategoryDao;
 import xianming.shop.dao.IProductDao;
 import xianming.shop.model.Category;
+import xianming.shop.model.Pager;
 import xianming.shop.model.Product;
 
 @Service("productService")
@@ -67,6 +68,18 @@ public class ProductService implements IProductService {
 	public List<Product> list() {
 		String hql = "select p from Product p join fetch p.category";
 		return productDao.list(hql);
+	}
+
+	@Override
+	public Pager<Product> find() {
+		String hql = "select p from Product p join fetch p.category";
+		return productDao.find(hql);
+	}
+
+	@Override
+	public Pager<Product> findByCid(int c_id) {
+		String hql = "select p from Product p where p.category.id=?";
+		return productDao.find(hql, c_id);
 	}
 
 }

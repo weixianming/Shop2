@@ -20,11 +20,13 @@
 				<td><a href="${category.id}/delete">删除</a></td>
 			</tr>
 			</c:forEach>
+			<c:if test="${loginUser.type eq 1}">
 			<tr style="text-align: center;">
 				<td colspan="2">
 					<a style="text-decoration: none;" href="add">添加商品类型</a>
 				</td>
 			</tr>
+			</c:if>
 		</table>
 	</div>
 </div>
